@@ -4,9 +4,6 @@
 Стек технологий:
 
 Vue.js 3 Composition API
-
 TypeScript
-
 Pinia
-
 UI фреймворк - Tailwind
