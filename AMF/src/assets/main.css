@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    height: 100vh;
-    align-content: center;
-}
-
 @layer components {
     .row  {
       box-sizing: border-box;

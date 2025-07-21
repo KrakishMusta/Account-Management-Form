@@ -30,7 +30,6 @@
         recordsRows.value.splice(index, 1)
       }
       
-      // Если буфер пуст - добавляем новую пустую запись
       if (recordsRows.value.length === 0) {
         createNewRecord()
       }
@@ -54,9 +53,9 @@
 </script>
 
 <template>
-  <div class="table-container">
-    <table class="table-auto box-border w-[100%] border-separate border-spacing-y-6">
-      <thead>
+  <div class="table-container min-h-[300px] max-h-[450px] overflow-y-scroll">
+    <table class="table-auto relative box-border w-[100%] border-separate border-spacing-y-6">
+      <thead class="sticky top-0 right-0 left-0 z-50 bg-white/10 backdrop-blur-md">
         <tr class="text-left text-sm text-neutral-400 font-thin">
           <th>Метки</th>
           <th></th>
@@ -69,7 +68,7 @@
           <th></th>
         </tr>
       </thead>
-      <tbody class="max-h-[500px] overflow-y-auto">
+      <tbody class="max-h-[500px]">
         <AccountListRow
           v-for="(record, index) in recordsRows"
           :key="index"
@@ -86,7 +85,7 @@
   .table-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     height: 100%;
   }
 </style>
