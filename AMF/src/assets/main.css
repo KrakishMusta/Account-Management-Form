@@ -13,10 +13,5 @@ body {
     }
     .row td {
       box-sizing: border-box;
-      /* width: fit-content; */
-    }
-    .row td textarea {
-      /* height: fit-content; */
-
     }
 }
