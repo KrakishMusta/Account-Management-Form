@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, onMounted, reactive } from 'vue';
+    import { ref, onMounted} from 'vue';
     import {AccountRowPerformance} from "@/models/AccountRowPerformance"
     import { useAccountStore } from '@/stores/accountStore';
     import AccountListRow from "./AccountListRow.vue"
