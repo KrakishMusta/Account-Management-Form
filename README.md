@@ -1,5 +1,5 @@
 # Account-Management-Form
-Тестовое задание, демонстрирующее владение заданным стеком технологий. [Техническое задание](https://github.com/KrakishMusta/Account-Management-Form/blob/main/Docs/%D0%A2%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B4%D0%BB%D1%8F_Vue_Frontend_Developer.docx)
+Тестовое задание, демонстрирующее владение заданным стеком технологий. [Техническое задание](https://github.com/KrakishMusta/Account-Management-Form/blob/main/Docs/%D0%A2%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B4%D0%BB%D1%8F_Vue_Frontend_Developer.docx).
 
 ## **Стек технологий**
 * Vue.js 3 Composition API (На версии vite 6.3.5 приложение не конфликтует с установленными пакетами)
