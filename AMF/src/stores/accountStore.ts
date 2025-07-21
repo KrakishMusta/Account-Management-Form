@@ -19,7 +19,7 @@ export const useAccountStore = defineStore('accounts', {
       this.records.splice(index, 1)
       this.saveToLocalStorage()
     },
-    loadFromLocalStorage() {
+    loadFromLocalStorage() : AccountRowPerformance[] {
       const saved = localStorage.getItem('accountRecords')
       if (saved) {
         const data = JSON.parse(saved)
@@ -27,6 +27,7 @@ export const useAccountStore = defineStore('accounts', {
           new AccountRowPerformance(item.tags, item.method, item.login, item.password)
         )
       }
+      return [...this.records];
     },
     saveToLocalStorage() {
       localStorage.setItem('accountRecords', JSON.stringify(this.records))

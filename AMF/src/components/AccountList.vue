@@ -1,44 +1,47 @@
 <script setup lang="ts">
     import { ref, onMounted, reactive } from 'vue';
-    import AccountListRow from "./AccountListRow.vue"
     import {AccountRowPerformance} from "@/models/AccountRowPerformance"
+    import { useAccountStore } from '@/stores/accountStore';
+    import AccountListRow from "./AccountListRow.vue"
 
+    const accountStore = useAccountStore();
     const recordsRows = ref<AccountRowPerformance[]>([]);
 
-    const createNewRecord = () =>
-    {
-        // recordsRows.value.push(AccountRowPerformance.create('[]', 'local', '', ''));
-        //тест
-        recordsRows.value.push(AccountRowPerformance.create('tag1;tag2', 'local', 'login', 'pass'));
-        //тест1
-        recordsRows.value.push(AccountRowPerformance.create('tag1;tag2', 'ldap', 'login', null));
+    const createNewRecord = () => {
+      recordsRows.value.push(AccountRowPerformance.create([], 'local', '', ''));
     }
 
-    const saveNewRecord = () =>
-    {
-
+    const saveValidatedRecord = (index: number, validatedRecord: AccountRowPerformance) => {
+      if (index < accountStore.getRecords.length) {
+        accountStore.updateRecord(index, validatedRecord)
+        console.log(`update`)
+      } 
+      else {
+        accountStore.addRecord(validatedRecord)
+        console.log(`save`)
+      }
+      
+      recordsRows.value[index] = validatedRecord
     }
 
-    // Обновление записи
-    const rewriteRecord = (index: number, updatedRecord: AccountRowPerformance) => {
-      recordsRows.value[index] = new AccountRowPerformance(
-        updatedRecord.tags,
-        updatedRecord.method,
-        updatedRecord.login,
-        updatedRecord.password
-      );
-    };
-
-    // Удаление записи
     const deleteRecord = (index: number) => {
-      recordsRows.value.splice(index, 1);
-    };
+      accountStore.deleteRecord(index);
+      if (index !== -1) {
+        recordsRows.value.splice(index, 1)
+      }
+      
+      // Если буфер пуст - добавляем новую пустую запись
+      if (recordsRows.value.length === 0) {
+        createNewRecord()
+      }
+    }
 
     onMounted(() =>
       {
+        recordsRows.value = accountStore.loadFromLocalStorage();
         if(recordsRows.value.length == 0)
         {
-          recordsRows.value.push(AccountRowPerformance.create([], 'local', '', ''));
+          recordsRows.value.push(AccountRowPerformance.create([], 'local', 'default', ''));
         }
       }
     )
@@ -71,7 +74,7 @@
           v-for="(record, index) in recordsRows"
           :key="index"
           :record="record"
-          @update:record="rewriteRecord(index, $event)"
+          @save="saveValidatedRecord(index, $event)"
           @delete="deleteRecord(index)"
         />
       </tbody>

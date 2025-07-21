@@ -4,13 +4,12 @@
 
   const props = defineProps({
     record: {
-      type: AccountRowPerformance, // Указываем класс как тип
-      required: true,
-      default: () => new AccountRowPerformance() // Фабрика по умолчанию
+      type: AccountRowPerformance,
+      required: true
     }
-  });
+  })
 
-  const emit = defineEmits(['save', 'change', 'delete']);
+  const emit = defineEmits(['save', 'delete'])
 
   interface ValidationResult {
     isValid: boolean;
@@ -35,11 +34,11 @@
   const loginRef = ref(null);
   const passwordRef = ref(null);
 
-  const tagsInput = ref('');
-  const loginInput = ref('');
-  const passwordInput = ref('');
-
-  const recordingType = ref('1');
+  const localRecord = ref<AccountRowPerformance>(props.record)
+  const tagsInput = ref('')
+  const loginInput = ref('')
+  const passwordInput = ref('')
+  const recordingType = ref('1')
 
   const rowValidation = (): ValidationResult => {
     const result: ValidationResult = {
@@ -62,46 +61,45 @@
     }
 
     if (recordingType.value === '1') {
-      if (passwordInput.value.trim() === '') {
+      if (passwordInput.value.trim() === '' || passwordInput.value == null) {
         result.isValid = false;
         result.errors.password = 'Пароль не может быть пустым';
       }
     }
 
+    validationStatus.value = result;
     return result;
   };
 
-  const saveRequest = () => {
-
-  };
-
-  const handleBlur = () => {
+  const handleSave = () => {
     const validation = rowValidation();
-      validationStatus.value = {
-      ...validationStatus.value,
-      ...validation
-    };
-    console.log(validationStatus)
-    if (validation.isValid)
-    {
-      saveRequest();
+    if (validation.isValid) {
+      const updatedRecord = AccountRowPerformance.create(
+        tagsInput.value,
+        recordingType.value === '1' ? 'local' : 'ldap',
+        loginInput.value,
+        recordingType.value === '1' ? passwordInput.value : null
+      )
+      emit('save', updatedRecord)
     }
-  };
+  }
 
-  onMounted(() => {
-      tagsInput.value = Array.isArray(props.record.tags) 
-      ? props.record.tags.join('; ') 
-      : props.record.tags || '';
+  const handleDelete = () => {
+    emit('delete');
+  }
 
-      recordingType.value = props.record.method === 'local' ? '1' : '2';
-      console.log(recordingType.value)
-      
-      loginInput.value = props.record.login || ''; // Добавляем заполнение логина
+  const initInputs = () => {
+    tagsInput.value = Array.isArray(localRecord.value.tags) 
+      ? localRecord.value.tags.join('; ') 
+      : localRecord.value.tags || ''
+    
+    recordingType.value = localRecord.value.method === 'local' ? '1' : '2'
+    loginInput.value = localRecord.value.login || ''
+    passwordInput.value = localRecord.value.password || ''
+  }
 
-      if (props.record.method === 'local')
-      {
-          passwordInput.value = props.record.password || '';
-      }
+  onMounted(async () => {
+      await initInputs();
   })
 </script>
 
@@ -112,7 +110,7 @@
           :tabindex="2" 
           ref="tagsRef" 
           v-model="tagsInput"
-          @blur="handleBlur"
+          @blur="handleSave"
           maxlength="50"
           placeholder="Метка" 
           class="        
@@ -150,7 +148,7 @@
     <td class="border rounded focus-within:border-black focus-within:ring-1 focus-within:ring-black p-0 h-fit">
       <select :tabindex="3" ref="recordingTypeRef" 
       v-model="recordingType"
-      @change="handleBlur"      
+      @change="handleSave"      
       class="text-[14px] leading-[14px] p-2 focus:outline-none focus:ring-0 focus:border-none w-fit h-full">
         <option value="1" selected>Локальная</option>
         <option value="2">LDAP</option>
@@ -163,7 +161,7 @@
       >
       <input :tabindex="4" ref="loginRef" placeholder="Логин" type="text"
       v-model="loginInput"
-      @blur="handleBlur"
+      @blur="handleSave"
       maxlength="100"
       autocomplete="username"
       class="w-full h-full text-[14px] leading-8 p-2 focus:outline-none focus:ring-0 focus:border-none"
@@ -189,16 +187,16 @@
       >
       <input :tabindex="5" ref="passwordRef" placeholder="Пароль" type="password"
       v-model="passwordInput"
-      @blur="handleBlur"
+      @blur="handleSave"
       maxlength="100"
       autocomplete="new-password"
       class="w-full h-full text-[14px] leading-8 p-2 focus:outline-none focus:ring-0 focus:border-none">
         <span 
-          v-if="validationStatus.errors.tags  !== ''"
+          v-if="validationStatus.errors.password  !== ''"
           class="absolute top-full left-0 text-xs text-red-500 mt-1"
           :class="{' border-red-500': validationStatus.errors.password !== ''}"
         >
-          {{ validationStatus.errors.password }}
+          {{ validationStatus.errors.password, 1 }}
         </span>
         <span 
           class="absolute top-full right-0 text-xs text-gray-500 mt-1"
@@ -209,7 +207,8 @@
     </td>
     <td class="w-3"></td>
     <td class="w-1">
-      <button :tabindex="6" 
+      <button :tabindex="6"
+      @click="handleDelete"
       class="w-10 h-10 border rounded-md p-2 border-black box-border hover:bg-slate-400 transition-colors">
         <svg class="block w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M6 18L18 6M6 6l12 12"/>
