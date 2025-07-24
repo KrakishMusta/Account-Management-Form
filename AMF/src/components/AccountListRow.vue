@@ -46,16 +46,10 @@
     const result: ValidationResult = {
       isValid: true,
       errors: {
-        tags: '',
         login: '',
         password: ''
       }
     };
-
-    if (tagsInput.value.trim() === '') {
-      result.isValid = false;
-      result.errors.tags = 'Метка не может быть пустой';
-    }
 
     if (loginInput.value.trim() === '') {
       result.isValid = false;
@@ -133,15 +127,7 @@
           @keydown.enter.prevent="tagsInput += '\n'"
         ></textarea>
         <span 
-          v-if="validationStatus.errors.tags !== ''"
-          class="absolute top-full left-0 text-xs text-red-500 mt-1"
-          :class="{' border-red-500': validationStatus.errors.tags !== ''}"
-        >
-          Максимум 50 символов
-        </span>
-        <span 
           class="absolute top-full right-0 text-xs text-gray-500 mt-1"
-          :class="{'text-red-500 mt-1': validationStatus.errors.tags !== ''}"
         >
           {{ tagsInput.length }}/50
         </span>
